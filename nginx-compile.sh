@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
+# git repo with module sources
+MODULE_GIT="https://github.com/arut/nginx-rtmp-module.git"
+MODULE_NAME=`basename ${MODULE_REPO##*/} .git`
+
 # tmp dir to compile nginx
-WORKDIR=/opt/src/tmp.build-nginx
+WORKDIR="/opt/src/tmp.build-nginx"
+
 # local apt repo dir
-REPODIR=/opt/deb
+REPODIR="/opt/deb"
 
 # fill sources
 BACKPORTS_LIST=/etc/apt/sources.list.d/backports.list
@@ -23,7 +28,7 @@ apt-get -qy install git devscripts
 apt-get -qy build-dep -t wheezy-backports nginx-extras
 
 # gzip prev work dir
-[[ -d $WORKDIR ]] && tar --remove-files -czf $WORKDIR.`date +%F_%T`.tar.gz /opt/src/tmp.build-nginx
+[[ -d $WORKDIR ]] && tar --remove-files -czf $WORKDIR.`date +%F_%T`.tar.gz $WORKDIR
 
 # create workdir
 mkdir -p $WORKDIR
@@ -34,16 +39,16 @@ cd $WORKDIR
 # get nginx sources
 apt-get -qy source -t wheezy-backports nginx-extras
 
-# download nginx-rtmp-module sources
-git clone https://github.com/arut/nginx-rtmp-module.git
+# download nginx module sources
+git clone $MODULE_GIT
 
 # add module to debian/rules file
-sed "s#\(^\s\+\)--with-http_ssl_module.\+#&\n\1--add-module=$WORKDIR/nginx-rtmp-module \\\#g" -i $WORKDIR/nginx-*/debian/rules
+sed "s#\(^\s\+\)--with-http_ssl_module.\+#&\n\1--add-module=$WORKDIR/$MODULE_NAME \\\#g" -i $WORKDIR/nginx-*/debian/rules
 
 # update 1st line of changelog
-sed -e '1s/(\(.\+\))/(\1.rtmp)/' -i $WORKDIR/nginx-*/debian/changelog
+sed -e '1s/(\(.\+\))/(\1.custom)/' -i $WORKDIR/nginx-*/debian/changelog
 
-# build nginx with rtmp module
+# build nginx with custom module
 cd $WORKDIR/nginx-*
 debuild -i -us -uc -b -j`grep ^processor /proc/cpuinfo | wc -l`
 
@@ -67,7 +72,7 @@ EOF
 # update apt cache
 apt-get -qy update
 
-# install nginx-extras package with rtmp module
+# install nginx-extras package with custom module
 apt-get -qy install nginx-extras
 
 
