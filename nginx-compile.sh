@@ -54,7 +54,8 @@ debuild -i -us -uc -b -j`grep ^processor /proc/cpuinfo | wc -l`
 mv $WORKDIR/*.deb $REPODIR/nginx/
 
 # generate Packages.gz for local nginx repo
-dpkg-scanpackages nginx /dev/null | gzip -c > /opt/deb/nginx/Packages.gz
+cd $REPODIR
+dpkg-scanpackages nginx /dev/null | gzip -c > $REPODIR/nginx/Packages.gz
 
 # add local nginx repo to apt
 REPO_LIST=/etc/apt/sources.list.d/nginx-local.list
