@@ -5,7 +5,7 @@ MODULE_GIT="https://github.com/arut/nginx-rtmp-module.git"
 MODULE_NAME=`basename ${MODULE_REPO##*/} .git`
 
 # tmp dir to compile nginx
-WORKDIR="/opt/src/tmp.build-nginx"
+WORKDIR="/opt/src/nginx_tmp"
 
 # local apt repo dir
 REPODIR="/opt/deb"
