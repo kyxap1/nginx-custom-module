@@ -1,18 +1,10 @@
-### nginx-custom-module
-===================
+## 3rd party modules installer for Nginx
 
-* nginx 3rd party module builder script
-* debian wheezy 7.5
-* nginx-rtmp-module (as example)
+Debian proposed method of own build packages handling is a little bit tricky and hard to remember process, especially if doing manually. The one of the most bothering things in the world, I guess. So, there is another yet quick and dirty bash script to automate build/installation/upgrade nginx with custom modules.
 
 Script will:
 
-1. add backports repository
-2. install nginx-extras sources
-3. clone module from github
-4. include module in nginx build
-5. recompile nginx
-6. create local repo from nginx .deb's and add it to apt cache
-7. installs nginx-extras
-
-
+* install nginx sources and build dependencies from wheezy-backports
+* fetch module source code from git and properly integrate with nginx build configuration
+* propagate dir-based local repository with nginx .deb packages and add this to the apt configuration
+* backup build dir with tar/gzip to save last successful build
