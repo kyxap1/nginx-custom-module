@@ -72,7 +72,7 @@ apt-get -qy update
 # installing nginx-extras package with custom module
 apt-get -qy install nginx-extras
 
-# archiving entire build env
-[[ -d $WORKDIR ]] && tar --remove-files -czf $WORKDIR.`date +%F_%T`.tar.gz $WORKDIR
+# skipping archive creation - no need atm
+# [[ -d $WORKDIR ]] && tar --remove-files -czf $WORKDIR.`+%F_%H-%M-%S`.tar.gz $WORKDIR
 
 exit 0
