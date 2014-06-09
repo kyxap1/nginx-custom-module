@@ -13,10 +13,13 @@ WORKDIR="/opt/src/nginx"
 REPODIR="/opt/deb"
 
 # fill sources
-BACKPORTS_LIST=/etc/apt/sources.list.d/backports.list
-[[ -f $BACKPORTS_LIST ]] || cat > $BACKPORTS_LIST <<EOF
-deb http://ftp.debian.org/debian/ wheezy-backports main
-deb-src http://ftp.debian.org/debian/ wheezy-backports main
+wget http://nginx.org/keys/nginx_signing.key -q -O - | apt-key add -
+
+NGINX_OFFICIAL=/etc/apt/sources.list.d/nginx.list
+[[ -f $NGINX_OFFICIAL ]] || cat > $NGINX_OFFICIAL <<EOF
+# nginx official repository
+deb http://nginx.org/packages/debian/ wheezy nginx
+deb-src http://nginx.org/packages/debian/ wheezy nginx
 
 EOF
 
@@ -28,13 +31,13 @@ apt-get -q update
 apt-get -qy install git devscripts
 
 # install build dependencies for nginx
-apt-get -qy build-dep -t wheezy-backports nginx-extras
+apt-get -qy build-dep nginx
 
 # create workdir
 mkdir -p $WORKDIR && cd $WORKDIR
 
 # fetching nginx sources
-apt-get -qy source -t wheezy-backports nginx
+apt-get -qy source nginx
 
 # fetching nginx module sources
 git clone $MODULE_GIT
@@ -69,8 +72,8 @@ EOF
 # updating apt cache
 apt-get -qy update
 
-# installing nginx-extras package with custom module
-apt-get -qy install nginx-extras
+# installing nginx package with custom module
+apt-get -qy install nginx
 
 # skipping archive creation - no need atm
 # [[ -d $WORKDIR ]] && tar --remove-files -czf $WORKDIR.`+%F_%H-%M-%S`.tar.gz $WORKDIR
